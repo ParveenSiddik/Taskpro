@@ -1,0 +1,82 @@
+{%extends 'base.html'%}
+
+{%block main_block%}
+
+<div class="container">
+ <div class="w-50 mx-auto">
+   <form action="">
+    <select name="category" id="" class="form-select" onchange="this.form.submit()">
+    <option value="all" {%if selected == "all"%}selected{%endif%}>all</option>
+    <option value="personal"{%if selected == "personal"%}selected{%endif%} >Personal</option>
+    <option value="business" {%if selected == "business"%}selected{%endif%}>Business</option>
+
+  
+    </select>
+    
+   </form>
+   <form action="{%url 'task_list'%}">
+   <input type="text" placeholder="enter key word" name="search_text">
+   <button type="submit">Search</button>
+</form>
+ </div>
+
+</div>
+<div class="container mt-5">
+    <div class="row">
+{%for t in tasks%}
+<div class="col-4">
+
+    <div class="card text-bg-dark mb-3" style="max-width: 18rem;">
+        <div class="card-header d-flex justify-content-between">
+            <div> {{t.user}}</div>
+        
+            <div>{{t.status}}</div>
+            {%if t.status == 'pending'%}
+            <div class="spinner-grow text-danger" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            {%endif%}
+
+            {%if t.status == 'in-progress'%}
+            <div class="spinner-grow text-warning" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            {%endif%}
+
+            {%if t.status == 'done'%}
+            <div class="spinner-grow text-success" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            {%endif%}
+           
+        </div>    
+           
+        <div class="card-body">
+            <h5 class="card-title">{{t.title}}</h5>
+            <p class="card-text">{{t.description}}</p>
+        </div>
+        <div class="card-footer text-body-white d-flex justify-content-between">
+            created_date:{{t.created_date|date}}
+          
+           
+
+            
+
+
+        </div>
+        <div class="card-footer text-body-white d-flex justify-content-between">
+           due_date:{{t.due_date|date}}
+            <a class="btn btn-dark bg-secondary" href="{%url 'task_update' t.id%}" role="button">View</a>
+            <a class="btn btn-dark bg-secondary" href="{%url 'task_delete' t.id%}" role="button">Delete</a>
+        </div>
+        <div>
+            last_updated:{{t.updated_date|date}}
+        </div>
+    </div>
+
+</div>  
+{%endfor%}
+</div>
+</div>
+{%endblock%}
+
