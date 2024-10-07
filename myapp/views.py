@@ -2,13 +2,18 @@ from django.shortcuts import render,redirect
 
 from django.views.generic import View
 
-from myapp.forms import TaskForm
+from myapp.forms import TaskForm,RegistrationForm,SignInForm
 
 from django.contrib import messages
 
 from myapp.models import Task
 
 from django import forms
+
+from django.contrib.auth.models import User
+
+from django.contrib.auth import login,logout,authenticate
+
 
 from django.db.models import Q
 
@@ -27,6 +32,8 @@ class TaskCreateView(View):
         form_instance=TaskForm(request.POST)
 
         if form_instance.is_valid():
+
+            form_instance.instance.user=request.user
 
             form_instance.save() # ModelForm provides this option without giving create 
 
@@ -140,6 +147,73 @@ class TaskDeleteView(View):
         Task.objects.get(id=kwargs.get("pk")).delete()
 
         return redirect("task_list")
+
+class SignUpView(View):
+
+    template_name="register.html"
+
+    def get(self,request,*args,**kwargs):
+
+        form_instance=RegistrationForm()
+
+        return render(request,self.template_name,{"form":form_instance})
+
+    def post(self,request,*args,**kwargs):
+
+        form_instance=RegistrationForm(request.POST)
+
+        if form_instance.is_valid():
+
+            data=form_instance.cleaned_data
+
+            User.objects.create_user(**data)
+
+            return redirect("signin")
+        else:
+
+            return render(request,self.template_name,{"form":form_instance})
+
+
+class SignInView(View):
+
+    template_name="login.html"
+
+    def get(self,request,*args,**kwargs):
+
+        form_instance=SignInForm()
+
+        return render(request,self.template_name,{"form":form_instance})
+
+    def post(self,request,*args,**kwargs):
+
+        form_instance=SignInForm(request.POST)
+
+        if form_instance.is_valid():
+
+            uname=form_instance.cleaned_data.get("username") 
+
+            pwd=form_instance.cleaned_data.get("password")
+
+            user_object=authenticate(request,username=uname,password=pwd)
+
+            if user_object:
+
+               login(request,user_object)
+
+               return redirect("task_list")
+
+        return render(request,self.template_name,{"form":form_instance})
+
+class SignOutView(View):
+
+    def get(self,request,*args,**kwargs):
+
+        logout(request)
+
+        return redirect('signin')        
+
+
+
 
 
 
