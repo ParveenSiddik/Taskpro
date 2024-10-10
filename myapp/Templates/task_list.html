@@ -3,23 +3,22 @@
 {%block main_block%}
 
 <div class="container">
-    <h1>Welcome {{request.user}}</h1>
+
+    <div><h1><center>Welcome {{request.user}}</center></h1>
+        <div class="d-flex justify-content-end"><a href="{%url 'logout'%}" class="btn btn-dark">Logout</a></div></div>
  <div class="w-50 mx-auto">
    <form action="">
     <select name="category" id="" class="form-select" onchange="this.form.submit()">
-    <option value="all" {%if selected == "all"%}selected{%endif%}>all</option>
+    <option value="all" {%if selected == "all"%}selected{%endif%}>All</option>
     <option value="personal"{%if selected == "personal"%}selected{%endif%} >Personal</option>
     <option value="business" {%if selected == "business"%}selected{%endif%}>Business</option>
-
+    
   
     </select>
     
-   </form>
-   <form action="{%url 'task_list'%}">
-   <input type="text" placeholder="enter key word" name="search_text">
-   <button type="submit">Search</button>
-</form>
- </div>
+ 
+   
+    
 
 </div>
 <div class="container mt-5">
@@ -57,21 +56,28 @@
             <p class="card-text">{{t.description}}</p>
         </div>
         <div class="card-footer text-body-white d-flex justify-content-between">
-            created_date:{{t.created_date|date}}
+            Created Date:{{t.created_date|date}}
+            
           
            
 
             
 
 
+            </div>
+            <div class="card-footer text-body-white d-flex justify-content-between">
+           Due Date:{{t.due_date|date}}
+          
+           
         </div>
+        
         <div class="card-footer text-body-white d-flex justify-content-between">
-           due_date:{{t.due_date|date}}
-            <a class="btn btn-dark bg-secondary" href="{%url 'task_update' t.id%}" role="button">View</a>
-            <a class="btn btn-dark bg-secondary" href="{%url 'task_delete' t.id%}" role="button">Delete</a>
+            Last Updated:{{t.updated_date|date}}
         </div>
-        <div>
-            last_updated:{{t.updated_date|date}}
+
+        <div class="card-footer text-body-white d-flex justify-content-between">
+            <a class="btn btn-dark bg-secondary" href="{%url 'task_update' t.id%}" role="button">Update</a>
+            <a class="btn btn-dark bg-secondary" href="{%url 'task_delete' t.id%}" role="button">Delete</a>
         </div>
     </div>
 
